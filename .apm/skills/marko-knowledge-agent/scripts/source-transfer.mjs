@@ -111,16 +111,44 @@ function compareVersions(actual, tested) {
 }
 function checkDependencies(manifest, target) {
   const dependencies = []
+  const issues = []
+  const commands = []
+  let coreSetup = false
   for (const [name, expected] of Object.entries(manifest.dependencies)) {
     const path = join(target, 'node_modules', name, 'package.json')
-    if (!existsSync(path)) fail(`DEPENDENCY_MISSING: ${name}; do not install without approval.`)
-    const actual = readJson(path).version
-    const comparison = compareVersions(actual, expected)
-    if (comparison < 0) fail(`DEPENDENCY_TOO_OLD: ${name}; tested ${expected}, installed ${actual}. Ask the owner to update; never change packages silently.`)
-    dependencies.push({ name, tested: expected, installed: actual, status: comparison > 0 ? 'NEWER_INSTALLED_KEEP_AND_TEST' : 'TESTED_VERSION' })
+    if (!existsSync(path)) {
+      issues.push(`DEPENDENCY_MISSING: ${name} — nije instaliran; potrebna je verzija ${expected} ili novija.`)
+    } else {
+      const actual = readJson(path).version
+      const comparison = compareVersions(actual, expected)
+      if (comparison >= 0) {
+        dependencies.push({ name, tested: expected, installed: actual, status: comparison > 0 ? 'NEWER_INSTALLED_KEEP_AND_TEST' : 'TESTED_VERSION' })
+        continue
+      }
+      issues.push(`DEPENDENCY_TOO_OLD: ${name} — instalirana je ${actual}; potrebna je ${expected} ili novija.`)
+    }
+    commands.push(`npm install --save-exact ${name}`)
+    if (name === '@coming.ui.core/themed-components') coreSetup = true
   }
   const scripts = readJson(join(target, 'package.json')).scripts
-  if (!scripts?.lint || !scripts?.build) fail('Target lint/build scripts are required; do not claim verification without them.')
+  if (!scripts?.lint || !scripts?.build) issues.push('Target lint/build scripts are required; do not claim verification without them.')
+  if (issues.length) {
+    const report = ['Potrebna je priprema projekta pre primene patterna.', ...issues]
+    if (coreSetup) report.push(
+      '',
+      'Coming Core je privatni paket. Pre njegove instalacije podesi firmin npm registry preko lokalnog .npmrc fajla u root-u projekta ili postojeće korisničke npm konfiguracije.',
+      'Koristi odobrenu konfiguraciju i drži .npmrc sa pristupnim podacima izvan Git-a. Agent ne čita niti prikazuje njegov sadržaj.',
+    )
+    if (commands.length) report.push(
+      '',
+      'Predložene komande za instalaciju ili ažuriranje:',
+      ...commands,
+      'Komande biraju verziju iz podešenog registry-ja i upisuju tačnu verziju u package.json. Zatim ponovi preflight da proveriš da li zadovoljava minimum.',
+      'Ako npm prijavi konflikt zavisnosti, uskladi verzije povezanih paketa pre ponovnog pokušaja.',
+    )
+    report.push('Priprema paketa čeka tvoju akciju ili izričito odobrenje za instalaciju.')
+    fail(report.join('\n'))
+  }
   return dependencies
 }
 function maskedConfiguration(source, names, ts, item = {}) {

@@ -2,7 +2,9 @@
 
 ## APM instalacija
 
-Paket 0.1.0 isporučuje ProjectFoundationSource i AppShellSource.
+Paket 0.1.1 isporučuje ProjectFoundationSource i AppShellSource.
+Pre prenosa prijavljuje sve nedostajuće biblioteke sa komandama za instalaciju.
+Za Coming Core podseća na privatni npm registry i lokalni .npmrc ili korisničku konfiguraciju.
 Za pripremu i proveru iz root-a ovog repozitorijuma:
 
 ~~~sh

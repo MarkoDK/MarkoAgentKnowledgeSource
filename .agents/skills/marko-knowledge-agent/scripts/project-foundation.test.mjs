@@ -79,7 +79,15 @@ test('plan reads only and missing dependencies block Foundation before writes', 
   assert.deepEqual(snapshot(root), before)
   const missing = project({ dependencies: false })
   const empty = snapshot(missing)
-  assert.throws(() => run(missing, 'apply'), /DEPENDENCY_MISSING/)
+  assert.throws(() => run(missing, 'apply'), (error) => {
+    for (const name of Object.keys(manifest.dependencies)) {
+      assert.ok(error.message.includes('DEPENDENCY_MISSING: ' + name))
+      assert.ok(error.message.includes('npm install --save-exact ' + name))
+    }
+    assert.match(error.message, /lokalnog \.npmrc/)
+    assert.match(error.message, /korisničke npm konfiguracije/)
+    return true
+  })
   assert.deepEqual(snapshot(missing), empty)
 })
 

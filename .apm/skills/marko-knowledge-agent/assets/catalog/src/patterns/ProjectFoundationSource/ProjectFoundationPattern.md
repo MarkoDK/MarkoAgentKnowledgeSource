@@ -86,6 +86,11 @@ Postojeći stilovi i poslovne funkcije se ne menjaju prećutno usvajanjem pravil
 
 Preduslovi: postojeći projekat sa package.json, lint/build skriptama i stvarno
 instaliranim Core/react/react-dom u proverenim ili novijim verzijama iz manifesta.
+Preflight odjednom prijavljuje sve nedostajuće ili prestare biblioteke, minimalne
+verzije i komande npm install --save-exact. Za privatni Core podseća da je pre
+instalacije potreban lokalni .npmrc ili korisnička registry konfiguracija.
+Pravilo ne zahteva lokalni .npmrc ako registry već radi preko korisničke
+konfiguracije. Provera ne čita credentials i ne izvršava instalacione komande.
 Nema samostalnog install/update/downgrade-a. Ako Core nedostaje, zatraži odobrenje
 za instalaciju i stani pre upisa. Noviju verziju zadrži i testiraj.
 

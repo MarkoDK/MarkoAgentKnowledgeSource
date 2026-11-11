@@ -59,7 +59,12 @@ merge/cleanup ugovor ispod, ne AppShell pravilo o fiksnom runtime bootstrap-u.
 - Koristi stvarne instalirane pakete ciljnog projekta. Novija verzija od
   proverene u manifestu NE blokira prenos; zadrži je i proveri lint/build
   i ponašanje. Manifest nije pin niti razlog za downgrade. Nedostajući ili
-  stariji paket traži dopunu od vlasnika. Bez samostalne instalacije/ažuriranja.
+  stariji paket prijavi kroz zajednički preflight: navedi sve pogođene biblioteke,
+  njihove minimalne verzije i predložene terminal komande. Za npm koristi
+  --save-exact da package.json zadrži konkretnu verziju. Ako nedostaje Coming
+  Core, pre njegove komande podseti na lokalni .npmrc ili korisničku registry
+  konfiguraciju. Postojeći ispravan paket zadrži. Instalaciju izvrši tek po
+  izričitom zahtevu ili odobrenju korisnika, pa ponovi preflight.
   Stvarna nekompatibilnost se prijavljuje konkretno, ne maskira lažnim Core-om.
 - Ne čitaj .npmrc/credentials. Ne izmišljaj auth, prava, API ili podatke.
 - Osim dokumentovanog Foundation defaulta, ako nema custom configa ni eksplicitnog izbora izvornog defaulta, pitaj
