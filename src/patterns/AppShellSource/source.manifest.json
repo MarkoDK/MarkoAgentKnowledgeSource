@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 2,
+  "source": "AppShellSource",
+  "revision": "2.1.0",
+  "dependencyPolicy": "tested-or-newer",
+  "pattern": "AppLayoutPattern.md",
+  "dependencies": {
+    "react-router-dom": "7.18.2",
+    "@coming.ui.core/themed-components": "0.1.10",
+    "react-dom": "19.3.0",
+    "react": "19.3.0"
+  },
+  "screenshots": [
+    "screenshots/app-shell-desktop.png",
+    "screenshots/app-shell-mobile.png"
+  ],
+  "files": [
+    {
+      "from": "src/patterns/AppShellSource/app/App.tsx",
+      "to": "src/App.tsx",
+      "role": "fixed",
+      "sha256": "4eb32a73f2f2c651e854569f0e6b39f683e5d712c3eaf736c1f0c2091baae0c3"
+    },
+    {
+      "from": "src/patterns/AppShellSource/app/index.css",
+      "to": "src/index.css",
+      "role": "fixed",
+      "sha256": "5d0a44c6e7552f23bd1e457d7ef79a7aa7480d317abd796c88f7235fc8af5263"
+    },
+    {
+      "from": "src/patterns/AppShellSource/app/main.tsx",
+      "to": "src/main.tsx",
+      "role": "fixed",
+      "sha256": "d1780a8d890db9ecb731fad7abd2d4189f136c744e43e8d863b6fa5c5661e5fe"
+    },
+    {
+      "from": "src/patterns/AppShellSource/app/layout/AppShell.module.css",
+      "to": "src/layout/AppShell.module.css",
+      "role": "fixed",
+      "sha256": "6cae9b7839718deb39fe8a5a79e8c393dee41ef5d296ce657babd9b3909adf19"
+    },
+    {
+      "from": "src/patterns/AppShellSource/app/layout/AppShell.tsx",
+      "to": "src/layout/AppShell.tsx",
+      "role": "fixed",
+      "sha256": "24368cd7d76dda23ceb18f7aac058190232b60b65fcc5d13854caadf392b9df8"
+    },
+    {
+      "from": "src/patterns/AppShellSource/app/router/AppRoutes.tsx",
+      "to": "src/layout/AppRoutes.tsx",
+      "role": "fixed",
+      "sha256": "138d0f2dad9b7a0dd5f93bf6699f4d1589583911ac99e88d5bc5be11fff2a5a3"
+    },
+    {
+      "from": "src/patterns/AppShellSource/config/AppLayoutConfig.tsx",
+      "to": "src/layout/AppLayoutConfig.tsx",
+      "role": "configuration",
+      "sha256": "bc64efc7b9aa7a41c0271194029ebfb904f24ffb8a3c191a4d9b816912966361",
+      "initializers": [
+        "appLayoutConfig"
+      ],
+      "allowJsx": true,
+      "allowLocalImports": true
+    },
+    {
+      "from": "src/patterns/AppShellSource/app/layout/navigation.ts",
+      "to": "src/layout/navigation.ts",
+      "role": "fixed",
+      "sha256": "7e1c87a77bec46a330fbd1b7d25ddbe9658c37ade5c14b609c3e12a12cbb0846"
+    },
+    {
+      "from": "src/patterns/AppShellSource/app/layout/EmptyPage.module.css",
+      "to": "src/layout/EmptyPage.module.css",
+      "role": "fixed",
+      "sha256": "486c6029ce11c381031cb8469d9399a7cacc6fd228270d299431bafcf62510c6"
+    },
+    {
+      "from": "src/patterns/AppShellSource/app/layout/EmptyPage.tsx",
+      "to": "src/layout/EmptyPage.tsx",
+      "role": "fixed",
+      "sha256": "84650594a120ad282186c1aaecc506d7634b706f9b1c30d7cdf2d5131e586916"
+    },
+    {
+      "from": "src/patterns/AppShellSource/shared/AppIcon.tsx",
+      "to": "src/layout/AppIcon.tsx",
+      "role": "fixed",
+      "sha256": "89696063840cb338e7f9fbdc0c028c7bd0b5ea5da33be3a921979b2244a453df"
+    }
+  ]
+}

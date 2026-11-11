@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "source": "TableAndAdvancedSearchSource",
+  "revision": "2.0.0",
+  "dependencyPolicy": "tested-or-newer",
+  "pattern": "TableAndAdvancedSearchPattern.md",
+  "dependencies": {
+    "@coming.ui.core/themed-components": "0.1.10",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "configurationDocument": "src/features/table-search/TableAndAdvancedSearchConfig.md",
+  "screenshots": [
+    "screenshots/table-search-desktop.png",
+    "screenshots/table-search-mobile-filter.png",
+    "screenshots/table-search-mobile-results.png",
+    "screenshots/table-search-custom-desktop.png"
+  ],
+  "files": [
+    {
+      "from": "src/patterns/TableAndAdvancedSearchSource/config/TableAndAdvancedSearchConfig.md",
+      "to": "src/features/table-search/TableAndAdvancedSearchConfig.md",
+      "role": "instructions",
+      "sha256": "53231931035cb34b4d0d60ebc84b805fad30ad0f4285af7289fc66f15b523c12"
+    },
+    {
+      "from": "src/patterns/TableAndAdvancedSearchSource/app/TableAndAdvancedSearchPage.tsx",
+      "to": "src/features/table-search/TableAndAdvancedSearchPage.tsx",
+      "role": "scaffold",
+      "sha256": "c039c3830df2bc0a4367eeac47c2649d47f7c503f729771f94f993ac87f98d64"
+    },
+    {
+      "from": "src/patterns/TableAndAdvancedSearchSource/app/TableAndAdvancedSearchPage.module.css",
+      "to": "src/features/table-search/TableAndAdvancedSearchPage.module.css",
+      "role": "fixed",
+      "sha256": "dbd08ee64cc07d7367f1b0e67c59f1646f68807ae4f60455f25081cfc4881e60"
+    }
+  ]
+}

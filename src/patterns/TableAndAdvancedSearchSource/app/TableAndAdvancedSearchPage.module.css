@@ -1,0 +1,68 @@
+.page {
+  --table-search-height: max(480px, calc(100dvh - 112px));
+  --table-search-toolbar-height: 74px;
+  --tc-advanced-search-height: var(--table-search-height);
+  --tc-page-header-text: var(--tc-color-primary, #4679d9);
+  width: 100%;
+  min-width: 0;
+}
+.withoutToolbar { --table-search-toolbar-height: 0px; }
+.filters:global(.tc-core-advanced-search-panel) { width: 320px; }
+.results:global(.tc-core-page-section) {
+  height: calc(var(--table-search-height) - var(--table-search-toolbar-height));
+  min-height: 360px;
+  --tc-page-section-header-padding-y: 0;
+  --tc-table-margin-top: 0;
+  --tc-table-header-padding: 8px 14px;
+  --tc-table-cell-padding: 8px 14px;
+  --tc-table-header-bg: var(--tc-color-primary-subtle, #e8f0fd);
+  --tc-table-overlay-bg: var(--tc-color-surface, #fff);
+}
+.results > :global(.tc-core-page-section__header) {
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  flex: 0 0 48px;
+  padding-block: 0;
+}
+.results > :global(.tc-core-page-section__body) {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 24px 16px 16px;
+}
+.header { display: flex; align-items: center; gap: 12px; width: 100%; min-width: 0; height: 100%; }
+.header > :global(.tc-core-page-header) { flex: 1; min-width: 0; margin: 0; }
+.header :global(.tc-core-page-header) span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.headerActions { display: flex; align-items: center; gap: 8px; max-width: 70%; min-width: 0; height: 46px; overflow: auto hidden; }
+.headerActions > * { flex-shrink: 0; }
+.headerActions :global(.tc-core-button) { height: 32px; min-height: 32px; max-height: 32px; padding-block: 0; white-space: nowrap; }
+.table:global(.tc-core-table) { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; }
+.table :global(.tc-core-table__toolbar) { display: none; }
+.table :global(.tc-core-table__scroll) {
+  flex: 1;
+  min-height: 0;
+  background: var(--tc-table-empty-bg, #f8fbff);
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+.table :global(.tc-core-table__body td) { height: 52px; }
+.table :global(.tc-core-table__pagination) { flex-shrink: 0; margin-top: 10px; }
+.table :global(.tc-core-table__body td:first-child) { font-weight: 700; }
+.cell { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cell:focus-visible { outline: 2px solid var(--tc-color-primary, #4679d9); outline-offset: 2px; }
+/* Only used when a custom config requests row actions. No default action column. */
+.rowActions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.rowActions :global(.tc-core-icon-button) { width: 36px; height: 36px; }
+.rowActions :global(.tc-core-icon-button__icon) { font-size: 22px; }
+
+@media (max-width: 1023px) {
+  .filters:global(.tc-core-advanced-search-panel) { width: 100%; }
+  .table :global(.tc-core-table__table), .table :global(.tc-core-table__body) { display: block; width: 100%; }
+  .table :global(.tc-core-table__head), .table :global(.tc-core-table__head tr) { display: flex; width: 100%; }
+  .table :global(.tc-core-table__head th) { flex: 1; min-width: 0; width: auto !important; }
+  .table :global(.tc-core-table__body) { padding: 8px; }
+  .table :global(.tc-core-table__body tr) { display: grid; gap: 12px; margin-bottom: 8px; padding: 12px; border: 1px solid var(--tc-color-border, #d7d6d6); border-radius: 8px; background: var(--tc-color-surface, #fff); }
+  .table :global(.tc-core-table__body td) { display: block; width: auto !important; height: auto; min-width: 0; padding: 0; border: 0; }
+  .cell::before { content: attr(data-label); display: block; margin-bottom: 2px; font-size: 12px; font-weight: 400; color: var(--tc-field-helper-text, #64748b); }
+}

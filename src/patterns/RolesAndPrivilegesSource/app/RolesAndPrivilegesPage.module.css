@@ -1,0 +1,264 @@
+.page {
+  --roles-height: max(480px, calc(100dvh - 112px));
+  --roles-toolbar-height: 74px;
+  --tc-advanced-search-height: var(--roles-height);
+  --tc-page-header-text: var(--tc-color-primary, #4679d9);
+  width: 100%;
+  min-width: 0;
+}
+.withoutToolbar {
+  --roles-toolbar-height: 0px;
+}
+.filters:global(.tc-core-advanced-search-panel) {
+  width: 320px;
+}
+.results:global(.tc-core-page-section) {
+  height: calc(var(--roles-height) - var(--roles-toolbar-height));
+  min-height: 360px;
+  --tc-page-section-header-padding-y: 0;
+  --tc-table-margin-top: 0;
+  --tc-table-header-padding: 8px 14px;
+  --tc-table-cell-padding: 8px 14px;
+  --tc-table-header-bg: var(--tc-color-primary-subtle, #e8f0fd);
+  --tc-table-overlay-bg: var(--tc-color-surface, #fff);
+}
+.results > :global(.tc-core-page-section__header) {
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  flex: 0 0 48px;
+  padding-block: 0;
+}
+.results :global(.tc-core-page-header) {
+  min-width: 0;
+  margin: 0;
+}
+.results :global(.tc-core-page-header) span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.results > :global(.tc-core-page-section__body) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 24px 16px 16px;
+}
+.table:global(.tc-core-table) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.table :global(.tc-core-table__toolbar) {
+  display: none;
+}
+.table :global(.tc-core-table__scroll) {
+  flex: 1;
+  min-height: 0;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+.table :global(.tc-core-table__body td) {
+  height: 52px;
+}
+.table :global(.tc-core-table__pagination) {
+  flex-shrink: 0;
+  margin-top: 10px;
+}
+.cell {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rowAction {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+.rowAction :global(.tc-core-icon-button) {
+  width: 36px;
+  height: 36px;
+}
+.chips {
+  display: flex;
+  margin-bottom: 12px;
+}
+.permissionsModal {
+  --tc-modal-wide-max-width: min(860px, calc(100vw - 32px));
+  height: min(720px, calc(100dvh - 32px));
+}
+.permissionsModal :global(.tc-modal__body) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.permissionsModal :global(.tc-core-page-header) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.permissionDirectoryToolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  min-width: 0;
+}
+.permissionDirectoryToolbar > * {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  max-width: none;
+}
+.permissionDirectory {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px;
+}
+.permissionDirectoryHeader {
+  margin: 0;
+  padding: 0 10px;
+  color: var(--tc-color-primary, #4679d9);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.permissionDirectoryRow {
+  border: 1px solid var(--tc-color-border, #dce5f1);
+  border-radius: 8px;
+  min-height: 36px;
+  padding: 4px 10px;
+  background: var(--tc-color-surface, #fff);
+}
+.permissionDirectoryRow[data-selected='true'] {
+  border-color: var(--tc-color-primary, #4679d9);
+  background: var(--tc-color-primary-subtle, #e8f0fd);
+}
+.permissionDirectoryRow :global(.tc-core-checkbox) {
+  width: 100%;
+}
+.permissionDirectoryLabel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.permissionDirectoryLabel > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.permissionDirectoryLabel small {
+  color: var(--tc-field-helper-text, #667085);
+  min-width: 0;
+  font-size: 10.5px;
+  line-height: 1.2;
+}
+.permissionGroup {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+}
+.permissionCode {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.enumId {
+  display: inline-block;
+  min-width: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--tc-field-helper-text, #667085);
+  font-size: 12px;
+}
+.confirmation :global(.tc-core-confirm-dialog__confirm-action > .tc-core-button) {
+  color: var(--tc-color-warning-text, #7a4b17);
+  background: var(--tc-color-warning-subtle, #fff4e8);
+  border-color: var(--tc-color-warning-border, #efc895);
+}
+@media (max-width: 1023px) {
+  .filters:global(.tc-core-advanced-search-panel) {
+    width: 100%;
+  }
+  .table :global(.tc-core-table__table),
+  .table :global(.tc-core-table__body) {
+    display: block;
+    width: 100%;
+  }
+  .table :global(.tc-core-table__head),
+  .table :global(.tc-core-table__head tr) {
+    display: flex;
+    width: 100%;
+  }
+  .table :global(.tc-core-table__head th) {
+    flex: 1;
+    min-width: 0;
+    width: auto !important;
+  }
+  .table :global(.tc-core-table__body) {
+    padding: 8px;
+  }
+  .table :global(.tc-core-table__body tr) {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 8px;
+    padding: 12px;
+    border: 1px solid var(--tc-color-border, #d7d6d6);
+    border-radius: 8px;
+    background: var(--tc-color-surface, #fff);
+  }
+  .table :global(.tc-core-table__body td) {
+    display: block;
+    width: auto !important;
+    height: auto;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+  }
+  .cell::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 12px;
+    color: var(--tc-field-helper-text, #64748b);
+  }
+}
+@media (max-width: 700px) {
+  .permissionDirectoryToolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .permissionDirectoryToolbar > * {
+    flex: none;
+    width: 100%;
+  }
+  .permissionDirectoryLabel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .permissionsModal {
+    --tc-modal-wide-max-width: calc(100vw - 16px);
+    height: calc(100dvh - 16px);
+  }
+}

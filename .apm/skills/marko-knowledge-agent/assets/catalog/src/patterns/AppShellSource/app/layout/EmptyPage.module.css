@@ -1,0 +1,32 @@
+.page {
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+  --tc-page-header-text: var(--tc-color-primary, #4679d9);
+}
+
+.pageSection {
+  min-height: 18rem;
+  overflow: hidden;
+}
+
+.pageSection :global(.tc-core-page-section__header) {
+  padding: 0;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 16px;
+}
+
+.pageHeader :global(.tc-core-page-header) {
+  margin: 0;
+  color: var(--tc-color-primary, #4679d9);
+}
+
+.emptyBody {
+  min-height: 12rem;
+}

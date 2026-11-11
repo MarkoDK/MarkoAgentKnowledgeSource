@@ -1,0 +1,7 @@
+name: marko-agent-knowledge-source
+version: 0.1.0
+description: Coming React and Core patterns with verified source transfer.
+targets:
+  - codex
+includes:
+  - .apm/skills/marko-knowledge-agent

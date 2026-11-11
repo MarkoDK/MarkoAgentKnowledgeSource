@@ -1,0 +1,5 @@
+# Preserve exact bytes checked by source manifests and the APM package.
+.agents/skills/marko-knowledge-agent/** -text
+.apm/** -text
+src/patterns/** -text
+src/index.css -text

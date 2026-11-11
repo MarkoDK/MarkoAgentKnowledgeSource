@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 2,
+  "source": "RolesAndPrivilegesSource",
+  "revision": "1.0.0",
+  "dependencyPolicy": "tested-or-newer",
+  "pattern": "RolesAndPrivilegesPattern.md",
+  "dependencies": {
+    "@coming.ui.core/themed-components": "0.1.12",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "configurationDocument": "src/features/role-settings/RolesAndPrivilegesConfig.md",
+  "screenshots": [
+    "screenshots/roles-desktop.png",
+    "screenshots/editor-desktop.png",
+    "screenshots/roles-mobile.png",
+    "screenshots/editor-mobile.png"
+  ],
+  "files": [
+    {
+      "from": "src/patterns/RolesAndPrivilegesSource/app/rolePermissions.ts",
+      "to": "src/features/role-settings/rolePermissions.ts",
+      "role": "fixed",
+      "sha256": "f5c9c0f18f1c8f15e221cb10844d8aa0fa55abb0c5ba199b99179fd83bae6c94"
+    },
+    {
+      "from": "src/patterns/RolesAndPrivilegesSource/app/RolesAndPrivilegesPage.tsx",
+      "to": "src/features/role-settings/RolesAndPrivilegesPage.tsx",
+      "role": "scaffold",
+      "sha256": "95b7d98daebf134ec3327aaf8826e8c9e250235aa0f93824d46b8944aac9de62"
+    },
+    {
+      "from": "src/patterns/RolesAndPrivilegesSource/app/RolePermissionsDialog.tsx",
+      "to": "src/features/role-settings/RolePermissionsDialog.tsx",
+      "role": "fixed",
+      "sha256": "40f6dc17c9014467825ef940efc222529f5fddd47c8dc8aa308fc30109905dcb"
+    },
+    {
+      "from": "src/patterns/RolesAndPrivilegesSource/app/RolesAndPrivilegesPage.module.css",
+      "to": "src/features/role-settings/RolesAndPrivilegesPage.module.css",
+      "role": "fixed",
+      "sha256": "94b1b576dc43510767ac0e460332e890c5ed49c77c2f011cfccb2f6df2f5ab18"
+    },
+    {
+      "from": "src/patterns/RolesAndPrivilegesSource/config/RolesAndPrivilegesConfig.md",
+      "to": "src/features/role-settings/RolesAndPrivilegesConfig.md",
+      "role": "instructions",
+      "sha256": "e211f971ecc2dd25e7ed302d6c3af83f6393a04cce5006f1b5b36963a46b3f90"
+    }
+  ]
+}

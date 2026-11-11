@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 2,
+  "source": "ProjectFoundationSource",
+  "kind": "foundation",
+  "revision": "1.1.0",
+  "dependencyPolicy": "tested-or-newer",
+  "pattern": "ProjectFoundationPattern.md",
+  "dependencies": {
+    "@coming.ui.core/themed-components": "0.1.10",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "configuration": "src/patterns/ProjectFoundationSource/config/ProjectFoundationConfig.json",
+  "starterFixtures": "src/patterns/ProjectFoundationSource/fixtures/vite-react-ts.json",
+  "resources": [
+    {
+      "path": "src/patterns/ProjectFoundationSource/config/ProjectFoundationConfig.json",
+      "sha256": "cb2d992c225256872335019381b004501928aa2024739e22841f8d5d56112640"
+    },
+    {
+      "path": "src/patterns/ProjectFoundationSource/fixtures/vite-react-ts.json",
+      "sha256": "4f388324a878567f12e8fda8c7e3c830e3386e96304c7984aa67f627b9dbf171"
+    }
+  ],
+  "files": [
+    {
+      "from": "src/patterns/ProjectFoundationSource/templates/AGENTS.md",
+      "to": "AGENTS.md",
+      "role": "managed-document",
+      "sha256": "0fec911f4d0da429dd53fb9a49ce8fca68b53bcee06fb3215c894277d5ee4cbb"
+    },
+    {
+      "from": "src/patterns/ProjectFoundationSource/templates/DesignRules.md",
+      "to": "DesignRules.md",
+      "role": "managed-document",
+      "sha256": "abe26b3bc53a1bf891cc3a2cf0a1de89865bd55c6cf6ac747f4a820c3ba283a0"
+    },
+    {
+      "from": "src/patterns/ProjectFoundationSource/templates/DecisionLog.md",
+      "to": "DecisionLog.md",
+      "role": "decision-log",
+      "sha256": "5e31c55aaad2ab62b840558fa88936e4d8d38a860aca4c7a2f5e9f320e2538d9"
+    },
+    {
+      "from": "src/patterns/ProjectFoundationSource/bootstrap/App.tsx",
+      "to": "src/App.tsx",
+      "role": "starter",
+      "sha256": "5fd1add77fd0bb8fc5e2851652db612a3e13c6cf5fe27f1c85b95538c5db2d35"
+    },
+    {
+      "from": "src/patterns/ProjectFoundationSource/bootstrap/main.tsx",
+      "to": "src/main.tsx",
+      "role": "starter",
+      "sha256": "054e2e9509b7e80b98f86ec186cb897dd86b1e0c536a82dfab2888d7da12e8f2"
+    },
+    {
+      "from": "src/patterns/ProjectFoundationSource/bootstrap/index.html",
+      "to": "index.html",
+      "role": "starter",
+      "sha256": "3f2c93482549095ec5e1d8bb1b36d7564793a6201edac28a9c56c2015385e5bd"
+    },
+    {
+      "from": "src/index.css",
+      "to": "src/index.css",
+      "role": "starter",
+      "sha256": "5d0a44c6e7552f23bd1e457d7ef79a7aa7480d317abd796c88f7235fc8af5263"
+    }
+  ]
+}

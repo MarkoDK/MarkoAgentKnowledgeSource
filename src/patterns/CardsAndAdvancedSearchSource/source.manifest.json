@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 2,
+  "source": "CardsAndAdvancedSearchSource",
+  "revision": "1.0.1",
+  "dependencyPolicy": "tested-or-newer",
+  "pattern": "CardsAndAdvancedSearchPattern.md",
+  "dependencies": {
+    "@coming.ui.core/themed-components": "0.1.12",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "configurationDocument": "src/features/cards-search/CardsAndAdvancedSearchConfig.md",
+  "screenshots": [
+    "screenshots/cards-search-desktop.png",
+    "screenshots/cards-search-mobile-results.png",
+    "screenshots/cards-search-mobile-filter.png"
+  ],
+  "files": [
+    {
+      "from": "src/patterns/CardsAndAdvancedSearchSource/config/CardsAndAdvancedSearchConfig.md",
+      "to": "src/features/cards-search/CardsAndAdvancedSearchConfig.md",
+      "role": "instructions",
+      "sha256": "c40761b9e1176986f9cdacbd95c98167337bacb297f173715c0ac3420564404c"
+    },
+    {
+      "from": "src/patterns/CardsAndAdvancedSearchSource/app/CardsAndAdvancedSearchPage.tsx",
+      "to": "src/features/cards-search/CardsAndAdvancedSearchPage.tsx",
+      "role": "scaffold",
+      "sha256": "ef8d44c9705b8d20c53d1b6274292a723f2d2ba2ab89573eb6693166a1ab3591"
+    },
+    {
+      "from": "src/patterns/CardsAndAdvancedSearchSource/app/CardsAndAdvancedSearchPage.module.css",
+      "to": "src/features/cards-search/CardsAndAdvancedSearchPage.module.css",
+      "role": "fixed",
+      "sha256": "e9e3e0aeb6557bf9623638747f1ed729f94a2e8c78d546dc4ccb2ea5c0c6a733"
+    }
+  ]
+}

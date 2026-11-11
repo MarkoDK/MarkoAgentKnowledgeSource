@@ -1,0 +1,646 @@
+.page {
+  --dashboard-primary: var(--tc-color-primary, #4679d9);
+  --dashboard-primary-subtle: var(--tc-color-primary-subtle, #e8f0fd);
+  --tc-page-header-text: var(--tc-color-primary, #4679d9);
+  --dashboard-text: #101828;
+  --dashboard-muted: #667085;
+  --dashboard-panel-border: #e3e8ef;
+  width: 100%;
+  min-width: 0;
+  color: var(--dashboard-text);
+  text-align: left;
+}
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.summaryGrid {
+  grid-template-columns: repeat(var(--dashboard-summary-columns, 6), minmax(0, 1fr));
+  gap: 14px;
+}
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+.rowFull {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+.summaryCard,
+.chartPanel,
+.tablePanel {
+  border-color: var(--dashboard-panel-border);
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.055);
+  min-width: 0;
+  overflow: hidden;
+}
+.summaryCard {
+  min-height: 104px;
+  transition: background-color 160ms ease;
+}
+.summaryCard > :global(.tc-core-page-section__body) {
+  height: 100%;
+  padding: 0;
+}
+.summaryCard:has(.summaryCardButton):hover {
+  background: color-mix(
+    in srgb,
+    var(--dashboard-primary-subtle) 58%,
+    var(--tc-color-surface, #fff)
+  );
+}
+.summaryCardContent,
+.summaryCardButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 102px;
+  padding: 13px 17px;
+}
+.summaryCardButton {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.summaryCardButton:focus-visible {
+  outline: 2px solid var(--dashboard-primary);
+  outline-offset: -3px;
+  border-radius: 11px;
+}
+.summaryIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 40px;
+  color: var(--dashboard-primary);
+}
+.summaryIcon svg {
+  width: 29px;
+  height: 29px;
+}
+.primary {
+  color: var(--dashboard-primary);
+}
+.secondary {
+  color: var(--tc-color-secondary, #f97316);
+}
+.danger {
+  color: var(--tc-color-danger, #d92d20);
+}
+.summaryContent {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+.summaryTitle {
+  overflow: hidden;
+  color: var(--dashboard-text);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.summaryValue {
+  margin-top: 1px;
+  color: #0d1638;
+  font-size: 27px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+  line-height: 1.05;
+}
+.summaryDescription {
+  min-width: 0;
+  margin-top: 5px;
+  color: var(--dashboard-muted);
+  font-size: 10.5px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.chartPanel {
+  height: 330px;
+}
+.tablePanel {
+  height: 326px;
+}
+.chartPanel > :global(.tc-core-page-section__header),
+.tablePanel > :global(.tc-core-page-section__header) {
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  flex: 0 0 44px;
+  padding: 8px 16px;
+}
+.chartPanel > :global(.tc-core-page-section__body) {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 0;
+  height: calc(100% - 44px);
+  padding: 8px 16px 13px;
+}
+.tablePanel > :global(.tc-core-page-section__body) {
+  flex: 1;
+  min-height: 0;
+  height: 231px;
+  padding: 0 16px;
+}
+.chartPanel > :global(.tc-core-page-section__footer),
+.tablePanel > :global(.tc-core-page-section__footer) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 7px 14px;
+  border-top: 1px solid #edf0f4;
+  background: var(--tc-color-surface, #fff);
+}
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+.panelHeader > :global(.tc-core-page-header) {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+.panelHeader :global(.tc-core-page-header) span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.periodOptions {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--tc-color-border, #e5e5e5);
+  border-radius: 8px;
+  background: color-mix(
+    in srgb,
+    var(--tc-color-closing, #f3f4f6) 65%,
+    var(--tc-color-surface, #fff)
+  );
+}
+.periodOptions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--tc-field-helper-text, #6b7280);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.periodOptions button:hover {
+  background: var(--dashboard-primary-subtle);
+  color: var(--dashboard-primary);
+}
+.periodOptions button.periodActive {
+  background: var(--dashboard-primary);
+  color: var(--tc-color-on-primary, #fff);
+}
+.periodOptions button:focus-visible {
+  outline: 2px solid var(--dashboard-primary);
+  outline-offset: 1px;
+}
+.panelState,
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 180px;
+  color: var(--dashboard-muted);
+  font-size: 12.5px;
+  text-align: center;
+}
+.spinner {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border: 2px solid var(--dashboard-primary-subtle);
+  border-top-color: var(--dashboard-primary);
+  border-radius: 50%;
+  animation: dashboard-spin 700ms linear infinite;
+}
+@keyframes dashboard-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.lineChart {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+.lineChart svg {
+  display: block;
+  width: 100%;
+  height: 238px;
+  overflow: visible;
+}
+.chartGridLine {
+  stroke: #e8edf4;
+  stroke-width: 1;
+}
+.chartAxisText {
+  fill: var(--dashboard-muted);
+  font-family: inherit;
+  font-size: 11px;
+}
+.chartLine {
+  fill: none;
+  stroke: var(--dashboard-primary);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+.chartPoint {
+  fill: var(--tc-color-surface, #fff);
+  stroke: var(--dashboard-primary);
+  stroke-width: 3;
+}
+.chartPointButton {
+  cursor: pointer;
+  outline: none;
+}
+.chartPointButton:focus-visible .chartPoint {
+  fill: var(--dashboard-primary-subtle);
+  stroke-width: 4;
+}
+.chartPointButton:hover .chartPoint {
+  r: 5px;
+}
+.chartTooltip {
+  pointer-events: none;
+}
+.chartTooltip rect {
+  fill: #253047;
+  filter: drop-shadow(0 4px 7px rgba(15, 23, 42, 0.18));
+}
+.tooltipTitle,
+.tooltipValue {
+  fill: #fff;
+  font-family: inherit;
+}
+.tooltipTitle {
+  font-size: 11px;
+  font-weight: 700;
+}
+.tooltipValue {
+  fill: #dbe7fb;
+  font-size: 10px;
+  font-weight: 500;
+}
+.pieLayout {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.8fr) minmax(235px, 1.2fr);
+  align-items: center;
+  gap: 22px;
+  width: 100%;
+  min-width: 0;
+}
+.donutWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.donut {
+  display: block;
+  width: min(190px, 100%);
+  height: auto;
+}
+.donutTrack {
+  fill: none;
+  stroke: #eef2f6;
+  stroke-width: 40;
+}
+.donutTotal {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
+}
+.donutTotal span {
+  color: var(--dashboard-text);
+  font-size: 11px;
+  font-weight: 700;
+}
+.donutTotal strong {
+  color: #0d1638;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.legend {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.legendHeader,
+.legendRow,
+.legendTotal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+.legendHeader {
+  padding: 0 2px 6px;
+  color: #344054;
+  font-size: 12px;
+  font-weight: 750;
+}
+.legendRows {
+  min-height: 0;
+  max-height: 195px;
+  overflow: auto;
+}
+.legendRow {
+  min-height: 29px;
+  padding: 5px 2px;
+  border-bottom: 1px solid #edf0f4;
+  color: #344054;
+  font-size: 12px;
+}
+.legendRow strong {
+  color: var(--dashboard-text);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+}
+.legendName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.legendName i {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+}
+.legendTotal {
+  margin-top: 7px;
+  padding: 7px 10px;
+  border: 1px solid #e3e8ef;
+  border-radius: 7px;
+  background: #f6f8fb;
+  color: var(--dashboard-text);
+  font-size: 12.5px;
+}
+.viewAllButton:global(.tc-core-button) {
+  min-height: 26px;
+  height: 26px;
+  padding-inline: 9px;
+  border: 0;
+  background: transparent;
+  font-size: 11px;
+}
+.tableScroll {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+.table {
+  display: block;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.table tbody {
+  display: block;
+  width: 100%;
+}
+.cellValue {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tableRow {
+  display: grid;
+  grid-template-columns: var(--dashboard-table-columns);
+  align-items: stretch;
+  gap: 11px;
+  min-height: 44px;
+  padding: 4px 0;
+  border-bottom: 1px solid #edf0f4;
+}
+.tableRow:last-child {
+  border-bottom: 0;
+}
+.tableRow td {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  color: #344054;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recordIndicator {
+  display: block;
+  height: 32px;
+  align-self: stretch;
+  width: 8px;
+  min-height: 32px;
+  margin-block: 2px;
+  border-radius: 4px;
+}
+.recordIdentity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+.recordIdentity strong,
+.recordIdentity small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recordIdentity strong {
+  color: var(--dashboard-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+.recordIdentity small {
+  margin-top: 2px;
+  color: var(--dashboard-muted);
+  font-size: 10.5px;
+}
+.recordButton {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.recordButton:hover {
+  color: var(--dashboard-primary);
+}
+.recordButton:focus-visible {
+  outline: 2px solid var(--dashboard-primary);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+.tableRow :global(.tc-core-status-badge) {
+  max-width: 140px;
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 1260px) {
+  .summaryCardContent,
+  .summaryCardButton {
+    gap: 11px;
+    padding-inline: 13px;
+  }
+  .summaryIcon {
+    width: 28px;
+    height: 38px;
+    flex-basis: 28px;
+  }
+  .summaryIcon svg {
+    width: 26px;
+    height: 26px;
+  }
+  .summaryTitle {
+    font-size: 11.5px;
+  }
+  .pieLayout {
+    gap: 10px;
+  }
+}
+@media (max-width: 1080px) {
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .chartPanel,
+  .tablePanel {
+    height: auto;
+    min-height: 316px;
+  }
+  .tablePanel > :global(.tc-core-page-section__body) {
+    height: auto;
+    min-height: 225px;
+  }
+}
+@media (max-width: 640px) {
+  .summaryGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .panelHeader {
+    gap: 6px;
+  }
+  .periodOptions {
+    gap: 1px;
+    padding: 2px;
+  }
+  .periodOptions button {
+    width: 23px;
+  }
+  .chartPanel {
+    min-height: 360px;
+  }
+  .chartPanel > :global(.tc-core-page-section__body) {
+    height: auto;
+  }
+  .pieLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .donut {
+    width: 170px;
+  }
+  .tableRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 10px 0;
+  }
+  .tableRow td {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .tableRow td:has(.recordIndicator) {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+.legendName > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

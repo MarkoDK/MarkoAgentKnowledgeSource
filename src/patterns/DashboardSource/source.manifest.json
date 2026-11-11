@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "source": "DashboardSource",
+  "revision": "1.0.1",
+  "dependencyPolicy": "tested-or-newer",
+  "pattern": "DashboardPattern.md",
+  "dependencies": {
+    "@coming.ui.core/themed-components": "0.1.12",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "configurationDocument": "src/features/dashboard/DashboardConfig.md",
+  "screenshots": [
+    "screenshots/dashboard-desktop.png",
+    "screenshots/dashboard-mobile.png"
+  ],
+  "files": [
+    {
+      "from": "src/patterns/DashboardSource/app/DashboardPage.tsx",
+      "to": "src/features/dashboard/DashboardPage.tsx",
+      "role": "scaffold",
+      "sha256": "c1eb455f87c536c1cd67950a10899e91b36e44a2724c473ce5464add8d0f7eab"
+    },
+    {
+      "from": "src/patterns/DashboardSource/app/DashboardWidgets.tsx",
+      "to": "src/features/dashboard/DashboardWidgets.tsx",
+      "role": "fixed",
+      "sha256": "59f1380d0c34bbcc5f9a4e54558f6a0befd091618ad74f6cd5be1e88a69776b7"
+    },
+    {
+      "from": "src/patterns/DashboardSource/app/DashboardCharts.tsx",
+      "to": "src/features/dashboard/DashboardCharts.tsx",
+      "role": "fixed",
+      "sha256": "42aaa94919b1aaf40ad96841002a8b9b34cffb5eafa6993ebfa292fa939c678e"
+    },
+    {
+      "from": "src/patterns/DashboardSource/app/DashboardPage.module.css",
+      "to": "src/features/dashboard/DashboardPage.module.css",
+      "role": "fixed",
+      "sha256": "2eb4ebfc1edc5e464b22ad30c030d579cc15362c40c2fd86f71ba565077dc9d4"
+    },
+    {
+      "from": "src/patterns/DashboardSource/config/DashboardConfig.md",
+      "to": "src/features/dashboard/DashboardConfig.md",
+      "role": "instructions",
+      "sha256": "ba48c2d69291f7a3e0445c7e90e6c4d45407064087f300c5fb383c9aa65d754a"
+    }
+  ]
+}
