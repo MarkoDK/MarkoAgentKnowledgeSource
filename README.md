@@ -2,7 +2,7 @@
 
 ## APM instalacija
 
-Paket 0.1.1 isporučuje ProjectFoundationSource i AppShellSource.
+Paket 0.2.0 isporučuje ProjectFoundationSource i AppShellSource.
 Pre prenosa prijavljuje sve nedostajuće biblioteke sa komandama za instalaciju.
 Za Coming Core podseća na privatni npm registry i lokalni .npmrc ili korisničku konfiguraciju.
 Za pripremu i proveru iz root-a ovog repozitorijuma:
@@ -50,7 +50,7 @@ Katalog prenosivih React obrazaca sa stvarnim Coming UI Core komponentama.
 - [SKILL.md](.agents/skills/marko-knowledge-agent/SKILL.md): jedini globalni ugovor generisanja.
 - [AppShellSource](src/patterns/AppShellSource/AppLayoutPattern.md): konkretan ugovor dostupnog obrasca.
 - [AppLayoutConfig.tsx](src/patterns/AppShellSource/config/AppLayoutConfig.tsx): primer jedinog korisničkog ulaza za AppShell.
-- [ProjectFoundationSource](src/patterns/ProjectFoundationSource/ProjectFoundationPattern.md): projektna pravila i bezbedno uklanjanje prepoznatog Vite demoa.
+- [ProjectFoundationSource](src/patterns/ProjectFoundationSource/ProjectFoundationPattern.md): prvi pattern: projektna pravila i potpuno uklanjanje početnog Vite sadržaja.
 - [TableAndAdvancedSearchSource](src/patterns/TableAndAdvancedSearchSource/TableAndAdvancedSearchPattern.md): jedan TSX + CSS, Core pretrage i tabela; opcione akcije samo po configu.
 - [CardsAndAdvancedSearchSource](src/patterns/CardsAndAdvancedSearchSource/CardsAndAdvancedSearchPattern.md): kod je implementiran; čeka stvarne vizuelne reference i završni transfer test pre otključavanja generisanja.
 - [RolesAndPrivilegesSource](src/patterns/RolesAndPrivilegesSource/RolesAndPrivilegesPattern.md): pregled i searchable editor, Edit/Pregled po configu; vizuelna potvrda pending.
@@ -62,8 +62,9 @@ Početak projekta (AGENTS.md, DesignRules.md, DecisionLog.md i Vite cleanup):
 $marko-knowledge-agent Primeni ProjectFoundationSource.
 ~~~
 
-Foundation ne dodaje AppShell ni poslovne ekrane. Postojeći custom sadržaj
-čuva; prepoznati demo menja uz lokalne povratne kopije. Detalji i jedini
+Foundation se prvo poziva u blank projektu: čisti src/public i demo README,
+postavlja prazan bootstrap i čuva lokalne povratne kopije. Ponovni poziv ne
+resetuje kasnije dodat kod. Ne dodaje AppShell ni poslovne ekrane. Detalji i jedini
 opcioni ulaz za naslov su u njegovom Pattern.md.
 
 Jedan workflow: izaberi izvorni default ili priloži imenovani config sa svojim

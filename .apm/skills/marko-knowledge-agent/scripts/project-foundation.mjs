@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
-import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs'
-import { basename, dirname, resolve } from 'node:path'
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmdirSync, unlinkSync, writeFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 
 const normalize = (value) => value.replaceAll('\r\n', '\n')
 const marker = (name, edge) => `<!-- project-foundation:${name}:${edge} -->`
@@ -32,22 +32,14 @@ function htmlTitle(value) {
   return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')
 }
 
-// Nonvisual Source: managed documents + a narrowly recognized Vite starter cleanup.
-// Never delete by filename alone, never evaluate a supplied config, never install packages.
+// First-project initialization: reset the declared starter scope once.
+// Later calls never reset application code. Config is data; packages are not installed.
 export function runFoundation({ mode, target, manifest, dependencies, config, replaceFiles }, context) {
-  if (replaceFiles.length) fail('Foundation does not accept --replace-file. Unknown application files must be preserved.')
-  const { safePath, digest, targetPayload, catalogRoot } = context
+  if (replaceFiles.length) fail('Foundation does not accept --replace-file; initialization has one declared scope.')
+  const { safePath, digest, targetPayload } = context
   const pathFor = (name) => safePath(target, name)
   const read = (name) => existsSync(pathFor(name)) ? readFileSync(pathFor(name)) : null
   const settings = configFor(manifest, config, context)
-  const fixture = JSON.parse(readFileSync(safePath(catalogRoot, manifest.starterFixtures), 'utf8'))
-  const versions = Object.values(fixture.releases)
-  const oldText = new Map()
-  for (const version of versions) for (const [path, text] of Object.entries(version.files)) {
-    if (!oldText.has(path)) oldText.set(path, [])
-    oldText.get(path).push(normalize(text))
-  }
-  const recognized = (name, data) => data !== null && oldText.get(name)?.includes(normalize(data.toString('utf8')))
   const items = manifest.files.map((item) => ({ ...item, data: targetPayload(manifest, item) }))
   const byTarget = new Map(items.map((item) => [item.to, item]))
   const actions = new Map()
@@ -63,82 +55,52 @@ export function runFoundation({ mode, target, manifest, dependencies, config, re
     propose(item.to, Buffer.from(next), 'Merge source-owned block; preserve all project content outside it.')
   }
 
-  // Treat the React entry/CSS/App as a unit: replacing only one can break user code.
-  const bootstrap = items.filter((item) => item.role === 'starter' && item.to !== 'index.html')
-  const safeBootstrap = bootstrap.every((item) => {
-    const current = read(item.to)
-    return current === null || current.equals(item.data) || recognized(item.to, current)
-  })
-  for (const item of bootstrap) {
-    if (safeBootstrap) propose(item.to, item.data, 'Absent, exact Foundation baseline, or verified Vite starter.')
-    else preserve(item.to, 'Application entry group contains custom code; no partial rewrite.')
+  const decisionItem = items.find((item) => item.role === 'decision-log')
+  const decision = read(decisionItem.to)?.toString('utf8') ?? ''
+  const start = marker('adoption', 'start'), end = marker('adoption', 'end')
+  const startCount = decision.split(start).length - 1, endCount = decision.split(end).length - 1
+  if (startCount !== endCount || startCount > 1 || (startCount && decision.indexOf(end) < decision.indexOf(start))) fail('MANAGED_BLOCK_MALFORMED: DecisionLog.md adoption receipt.')
+  const initializing = startCount === 0
+  const directories = []
+
+  if (initializing) {
+    // This Source is explicitly for a fresh project, before any feature Source.
+    // Enumerate precise files; reject links and validate paths before any write.
+    function clearStarter(folder) {
+      const directory = pathFor(folder)
+      if (!existsSync(directory)) return
+      for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        const name = folder + '/' + entry.name
+        pathFor(name)
+        if (/^(?:\.env(?:\..*)?|\.npmrc|\.yarnrc(?:\.yml)?|credentials(?:\..*)?|secrets?(?:\..*)?|\.aws|\.git|node_modules|\.codex-tmp)$/i.test(entry.name)) {
+          fail('PROTECTED_FILE_IN_STARTER_SCOPE: ' + name + '; move it outside src/public before initialization.')
+        }
+        if (entry.isDirectory()) clearStarter(name)
+        else if (!byTarget.has(name)) propose(name, null, 'Remove initial project content from the declared src/public scope.')
+      }
+      directories.push(folder)
+    }
+    clearStarter('src')
+    clearStarter('public')
+    if (read('README.md') !== null) propose('README.md', null, 'Remove the initial starter README; project rules are in AGENTS.md and DesignRules.md.')
+    for (const item of items.filter((item) => item.role === 'starter' && item.to !== 'index.html')) {
+      propose(item.to, item.data, 'Initialize the clean React/Core bootstrap, independently of starter version.')
+    }
   }
+
   const html = byTarget.get('index.html')
   const template = html.data.toString('utf8')
   const desiredHtml = Buffer.from(template.replace('{{DOCUMENT_TITLE}}', htmlTitle(settings.documentTitle)))
   const currentHtml = read('index.html')
   const isFoundationHtml = currentHtml !== null && normalize(currentHtml.toString('utf8')).replace(/<title>[^<]*<\/title>/, '<title>{{DOCUMENT_TITLE}}</title>') === normalize(template)
-  if (safeBootstrap && (currentHtml === null || recognized('index.html', currentHtml) || (isFoundationHtml && config))) propose('index.html', desiredHtml, 'Remove verified demo favicon/title; apply documentTitle only to the neutral Foundation HTML.')
-  else if (isFoundationHtml) propose('index.html', currentHtml, safeBootstrap ? 'Keep current Foundation title unless a custom config is explicitly supplied.' : 'Application entry group is custom; keep its current HTML unchanged.')
-  else preserve('index.html', 'Custom HTML or application code; preserve metadata and entry references.')
-
-  const candidates = new Map()
-  const appCss = read('src/App.css')
-  if (recognized('src/App.css', appCss)) candidates.set('src/App.css', appCss)
-  else if (appCss !== null) preserve('src/App.css', 'Not an exact verified demo stylesheet.')
-  for (const version of versions) for (const [name, asset] of Object.entries(version.assets)) {
-    const bytes = read(name)
-    if (bytes === null) continue
-    if (digest(bytes) === asset.sha256) candidates.set(name, bytes)
-    else if (!candidates.has(name)) preserve(name, 'Unknown or modified asset: filename is not permission to delete.')
-  }
-
-  // Conservative reference scan of prospective app files. Resolve a fixed point so
-  // a preserved demo file also keeps the demo assets it still references.
-  const texts = new Map()
-  let incompleteScan = false
-  function walk(folder) {
-    const directory = pathFor(folder)
-    if (!existsSync(directory)) return
-    for (const entry of readdirSync(directory, { withFileTypes: true })) {
-      const name = `${folder}/${entry.name}`
-      pathFor(name) // Reject symlinks before the first write, including directory links.
-      if (/^(?:\.env(?:\..*)?|\.npmrc|\.yarnrc(?:\.yml)?|credentials(?:\..*)?|secrets?(?:\..*)?|\.aws|\.git|node_modules|\.codex-tmp)$/i.test(entry.name)) incompleteScan = true
-      else if (entry.isDirectory()) walk(name)
-      else if (lstatSync(pathFor(name)).size > 2 * 1024 * 1024) incompleteScan = true
-      else texts.set(name, read(name).toString('utf8'))
-    }
-  }
-  walk('src'); walk('public')
-  if (incompleteScan) {
-    for (const name of candidates.keys()) preserve(name, 'Reference scan skipped protected content or a file over 2 MiB; preserve demo assets conservatively.')
-    candidates.clear()
-  }
-  if (currentHtml !== null) texts.set('index.html', currentHtml.toString('utf8'))
-  for (const action of actions.values()) if (['create', 'update', 'identical'].includes(action.status)) texts.set(action.path, action.data.toString('utf8'))
-  let changed
-  do {
-    changed = false
-    for (const [name] of candidates) {
-      if ([...texts].some(([reader, text]) => reader !== name && !candidates.has(reader) && text.includes(basename(name)))) {
-        candidates.delete(name)
-        preserve(name, 'Still referenced by prospective application content.')
-        changed = true
-      }
-    }
-  } while (changed)
-  for (const [name] of candidates) propose(name, null, 'Exact verified demo fingerprint AND no remaining application reference.')
+  if (initializing || (config && isFoundationHtml)) propose('index.html', desiredHtml, 'Apply the configured title to the neutral Foundation HTML.')
+  else if (currentHtml !== null) preserve('index.html', 'Already initialized; preserve application HTML and its current title.')
 
   const ignore = read('.gitignore')?.toString('utf8') ?? ''
   // Place the directory rule last, so a previous negation cannot expose backups.
   const ignored = ignore.trimEnd().split(/\r?\n/).at(-1) === '.codex-tmp/'
   propose('.gitignore', Buffer.from(ignored ? ignore : appendSection(ignore, '# Local verification and recoverable backups\n.codex-tmp/')), 'Keep local backups out of version control; preserve existing ignore rules.')
 
-  const decisionItem = items.find((item) => item.role === 'decision-log')
-  const decision = read(decisionItem.to)?.toString('utf8') ?? ''
-  const start = marker('adoption', 'start'), end = marker('adoption', 'end')
-  const startCount = decision.split(start).length - 1, endCount = decision.split(end).length - 1
-  if (startCount !== endCount || startCount > 1 || (startCount && decision.indexOf(end) < decision.indexOf(start))) fail('MANAGED_BLOCK_MALFORMED: DecisionLog.md adoption receipt.')
   const changes = [...actions.values()].filter((item) => ['create', 'update', 'remove'].includes(item.status))
   const needsBackup = changes.some((item) => item.before !== null) || (!startCount && read(decisionItem.to) !== null)
   const backup = needsBackup ? `.codex-tmp/project-foundation-backups/${new Date().toISOString().replaceAll(':', '-')}-${randomUUID()}` : null
@@ -187,11 +149,16 @@ export function runFoundation({ mode, target, manifest, dependencies, config, re
   }
   try {
     // Ignore backups before changing application content.
-    writes.sort((a, b) => Number(b.path === '.gitignore') - Number(a.path === '.gitignore'))
+    const order = (item) => item.path === '.gitignore' ? -1 : item.path === decisionItem.to ? 1 : 0
+    writes.sort((a, b) => order(a) - order(b))
     for (const action of writes) {
       const file = pathFor(action.path)
       if (action.status === 'remove') unlinkSync(file)
       else { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, action.data) }
+    }
+    for (const folder of directories) {
+      const directory = pathFor(folder)
+      if (folder !== 'src' && existsSync(directory) && readdirSync(directory).length === 0) rmdirSync(directory)
     }
   } catch (error) {
     fail(`FOUNDATION_WRITE_FAILED: ${error.message}; inspect current state, do not retry blindly. Recovery: ${backup ?? 'only new files were planned'}`)

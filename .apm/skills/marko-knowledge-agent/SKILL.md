@@ -1,6 +1,6 @@
 ---
 name: marko-knowledge-agent
-description: Apply a named MarkoAgentKnowledgeSource pattern, establish ProjectFoundation rules with safe Vite demo cleanup, or interpret a natural-language config and update supported configuration in a target React/Core project. Not for authoring the knowledge catalog.
+description: Apply a named MarkoAgentKnowledgeSource pattern, initialize a fresh Vite project with a clean React/Core bootstrap and project rules, or interpret a natural-language config and update supported configuration in a target React/Core project. Not for authoring the knowledge catalog.
 ---
 
 # Coming knowledge agent — globalni ugovor
@@ -29,7 +29,9 @@ Authoring AGENTS.md KnowledgeSource-a nije zavisnost ovog postupka.
 ## Preflight — bez upisa
 
 Za `ProjectFoundationSource` prvo pročitaj njegov `ProjectFoundationPattern.md`.
-To je nevizuelni obrazac: tri projektna dokumenta + prepoznati starter cleanup.
+To je prvi, nevizuelni obrazac blank projekta: tri dokumenta + potpuno početno
+čišćenje src/public i demo README-a. Poziv odobrava taj deklarisani obim;
+ne zavisi od Vite verzije. Ne primenjuje se prvi put na već razvijenoj aplikaciji.
 Sam poziv „Primeni ProjectFoundationSource” bira njegov dokumentovani default;
 opciono koristi priloženi ProjectFoundationConfig.json. Za njega važi posebni
 merge/cleanup ugovor ispod, ne AppShell pravilo o fiksnom runtime bootstrap-u.
@@ -100,8 +102,8 @@ Host daje katalog, dodele i stvarne load/save callbacke. Podrazumevane privilegi
 su zaključane; nema prenosa poslovnih enum-a niti izmišljanja API-ja.
 Za ProjectFoundationSource isti alat automatski koristi njegovu managed-document
 i starter granu: plan → pregled → apply → verify. Dokumenti se dopunjuju bez
-brisanja postojećih pravila, neprepoznat kod se čuva, prepoznat demo menja uz
-povratne kopije. Ne koristi --replace-file da zaobiđeš zaštitu Foundation-a.
+brisanja postojećih pravila. Prva primena očisti deklarisani početni sadržaj
+uz povratne kopije; ponovna ne briše aplikacioni kod. Ne koristi --replace-file.
 U izveštaju navedi šta je očišćeno, šta je sačuvano i lokaciju kopija. Samo
 dodavanje DesignRules.md ne implementira sve buduće komponente ili ponašanja.
 Za AppShellSource jedini ulaz je AppLayoutConfig.tsx: jedan appLayoutConfig objekat,

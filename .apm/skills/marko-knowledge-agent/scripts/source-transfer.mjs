@@ -40,7 +40,7 @@ export function loadSource(name) {
   if (manifest.kind === 'foundation') {
     if (name !== 'ProjectFoundationSource' || !manifest.resources?.length) fail('Invalid Foundation contract.')
     for (const item of manifest.resources) if (digest(readFileSync(safePath(catalogRoot, item.path))) !== item.sha256) fail(`SOURCE_DRIFT: ${item.path}`)
-    for (const resource of [manifest.configuration, manifest.starterFixtures]) if (!manifest.resources.some((item) => item.path === resource)) fail('Foundation resource integrity declaration missing.')
+    if (!manifest.resources.some((item) => item.path === manifest.configuration)) fail('Foundation resource integrity declaration missing.')
   }
   const outputs = new Set()
   const inputs = new Set()

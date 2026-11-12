@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "source": "ProjectFoundationSource",
   "kind": "foundation",
-  "revision": "1.1.0",
+  "revision": "2.0.0",
   "dependencyPolicy": "tested-or-newer",
   "pattern": "ProjectFoundationPattern.md",
   "dependencies": {
@@ -11,15 +11,10 @@
     "react-dom": "19.3.0"
   },
   "configuration": "src/patterns/ProjectFoundationSource/config/ProjectFoundationConfig.json",
-  "starterFixtures": "src/patterns/ProjectFoundationSource/fixtures/vite-react-ts.json",
   "resources": [
     {
       "path": "src/patterns/ProjectFoundationSource/config/ProjectFoundationConfig.json",
       "sha256": "cb2d992c225256872335019381b004501928aa2024739e22841f8d5d56112640"
-    },
-    {
-      "path": "src/patterns/ProjectFoundationSource/fixtures/vite-react-ts.json",
-      "sha256": "4f388324a878567f12e8fda8c7e3c830e3386e96304c7984aa67f627b9dbf171"
     }
   ],
   "files": [
@@ -39,7 +34,7 @@
       "from": "src/patterns/ProjectFoundationSource/templates/DecisionLog.md",
       "to": "DecisionLog.md",
       "role": "decision-log",
-      "sha256": "5e31c55aaad2ab62b840558fa88936e4d8d38a860aca4c7a2f5e9f320e2538d9"
+      "sha256": "3d1909a5e8314f64b5d281942a3967c4c90541be00a1f70f74b3709133dd5bc2"
     },
     {
       "from": "src/patterns/ProjectFoundationSource/bootstrap/App.tsx",

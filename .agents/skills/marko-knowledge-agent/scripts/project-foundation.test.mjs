@@ -9,7 +9,6 @@ import { catalogRoot, loadSource, runTransfer } from './source-transfer.mjs'
 
 const source = 'ProjectFoundationSource'
 const manifest = loadSource(source)
-const fixture = JSON.parse(readFileSync(join(catalogRoot, manifest.starterFixtures), 'utf8'))
 const temporary = []
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex')
 const run = (target, mode, extra = {}) => runTransfer({ target, mode, source, ...extra })
@@ -25,8 +24,17 @@ function project({ version, dependencies = true } = {}) {
   write(root, 'package.json', JSON.stringify({ private: true, type: 'module', scripts: { lint: 'oxlint', build: 'tsc --noEmit && vite build' } }))
   if (dependencies) symlinkSync(join(catalogRoot, 'node_modules'), join(root, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir')
   if (version) {
-    for (const [name, text] of Object.entries(fixture.releases[version].files)) write(root, name, text)
-    write(root, 'src/assets/react.svg', fixture.sampleAssets['src/assets/react.svg'])
+    // Deliberately varied starter content: cleanup must not depend on an exact Vite release.
+    write(root, 'src/App.tsx', "import './App.css'\nexport default function App(){ return <h1>Starter " + version + "</h1> }\n")
+    write(root, 'src/main.tsx', '// Initial Vite entry ' + version)
+    write(root, 'src/index.css', 'body { color: purple }')
+    write(root, 'src/App.css', '.demo { padding: 42px }')
+    write(root, 'src/assets/react.svg', '<svg>starter logo ' + version + '</svg>')
+    write(root, 'src/assets/hero.png', Buffer.from([1, 2, 3, 4]))
+    write(root, 'public/icons.svg', '<svg>starter icons</svg>')
+    write(root, 'public/favicon.svg', '<svg>starter favicon</svg>')
+    write(root, 'index.html', '<html><title>experiment32</title><img src="/favicon.svg"></html>')
+    write(root, 'README.md', '# Default Vite README')
   }
   return root
 }
@@ -58,13 +66,13 @@ after(() => {
   }
 })
 
-test('Foundation is nonvisual, has integrity-checked resources and the shared AppShell font baseline', () => {
+test('Foundation is nonvisual, has no starter-version dependency and shares the AppShell font baseline', () => {
   assert.equal(manifest.kind, 'foundation')
+  assert.equal(manifest.starterFixtures, undefined)
   assert.equal(manifest.files.length, 7)
   const css = manifest.files.find((file) => file.to === 'src/index.css')
   const shellCss = loadSource('AppShellSource').files.find((file) => file.to === css.to)
   assert.equal(css.sha256, shellCss.sha256)
-  assert.equal(sha(Buffer.from(fixture.sampleAssets['src/assets/react.svg'])), fixture.releases['v8.0.0'].assets['src/assets/react.svg'].sha256)
   const installedCss = readFileSync(join(catalogRoot, 'node_modules/@coming.ui.core/themed-components/style.css'), 'utf8')
   assert.equal(installedCss.includes('@font-face'), false)
   assert.deepEqual([...new Set([...installedCss.matchAll(/font-family:([^;}]+)/g)].map((match) => match[1].trim()))], ['inherit'])
@@ -91,16 +99,19 @@ test('plan reads only and missing dependencies block Foundation before writes', 
   assert.deepEqual(snapshot(missing), empty)
 })
 
-for (const version of ['v7.3.0', 'v8.0.0']) test(`cleans the exact ${version} starter, backs up original bytes and is idempotent`, () => {
+for (const version of ['v7.3.0', 'v8.0.0']) test(`cleans all initial ${version} content, backs up original bytes and is idempotent`, () => {
   const root = project({ version })
   write(root, '.gitignore', 'node_modules\ndist\n')
   const before = snapshot(root)
   const result = run(root, 'apply')
   assert.ok(result.changed > 0)
   assert.ok(result.backup.startsWith('.codex-tmp/project-foundation-backups/'))
-  assert.equal(readFileSync(join(root, result.backup, 'src/App.tsx'), 'utf8'), fixture.releases[version].files['src/App.tsx'])
+  assert.equal(sha(readFileSync(join(root, result.backup, 'src/App.tsx'))), before['src/App.tsx'])
   assert.equal(sha(readFileSync(join(root, result.backup, 'src/assets/react.svg'))), before['src/assets/react.svg'])
   assert.equal(existsSync(join(root, 'src/App.css')), false)
+  assert.equal(existsSync(join(root, 'src/assets')), false)
+  assert.equal(existsSync(join(root, 'public')), false)
+  assert.equal(existsSync(join(root, 'README.md')), false)
   assert.equal(existsSync(join(root, 'src/assets/react.svg')), false)
   assert.equal(readFileSync(join(root, 'src/App.tsx'), 'utf8').includes('return null'), true)
   assert.doesNotMatch(readFileSync(join(root, 'index.html'), 'utf8'), /favicon|vite\.svg|Vite \+/)
@@ -114,39 +125,48 @@ for (const version of ['v7.3.0', 'v8.0.0']) test(`cleans the exact ${version} st
   assert.equal(before['package.json'], applied['package.json'])
 })
 
-test('custom application code, its referenced demo asset and unknown logos survive', () => {
-  const root = project({ version: 'v8.0.0' })
-  write(root, 'src/App.tsx', "import './App.css'\nimport logo from './assets/react.svg'\nexport default function App(){return <img src={logo} alt='Custom'/>}\n")
-  write(root, 'public/favicon.svg', '<svg>custom logo</svg>')
-  write(root, 'src/custom.ts', 'export const businessValue = 42\n')
+test('first initialization removes every initial src/public file regardless of its name, type or size', () => {
+  const root = project({ version: 'future-vite' })
+  write(root, 'src/unknown/template.scss', '.unknown { color: red }')
+  write(root, 'public/future/demo/image.bin', Buffer.alloc(2 * 1024 * 1024 + 1, 'x'))
+  write(root, 'tsconfig.json', '{"compilerOptions":{}}')
+  write(root, 'vite.config.ts', '// Tool configuration stays')
+  write(root, '.npmrc', '# Local registry sentinel')
+  write(root, '.env.local', 'LOCAL_SETTING=unchanged')
+  write(root, 'apm.yml', 'name: host')
+  write(root, '.agents/skills/host/SKILL.md', '# Existing skill')
   const before = snapshot(root)
   const result = run(root, 'apply')
-  for (const name of ['src/App.tsx', 'src/main.tsx', 'src/index.css', 'src/App.css', 'src/assets/react.svg', 'public/favicon.svg', 'index.html', 'src/custom.ts']) assert.equal(snapshot(root)[name], before[name], name)
-  assert.ok(result.files.some((file) => file.path === 'src/assets/react.svg' && file.status === 'preserve' && file.reason.includes('referenced')))
-  assert.ok(existsSync(join(root, 'DesignRules.md')))
+  for (const name of ['tsconfig.json', 'vite.config.ts', '.npmrc', '.env.local', 'apm.yml', '.agents/skills/host/SKILL.md', 'package.json']) assert.equal(snapshot(root)[name], before[name], name)
+  assert.deepEqual(readdirSync(join(root, 'src')).sort(), ['App.tsx', 'index.css', 'main.tsx'])
+  for (const name of ['src/unknown/template.scss', 'public/future/demo/image.bin', 'src/assets/hero.png', 'README.md']) {
+    assert.equal(existsSync(join(root, name)), false)
+    assert.equal(sha(readFileSync(join(root, result.backup, name))), before[name])
+  }
   assert.match(run(root, 'verify').status, /^FOUNDATION_CONTRACT_OK/)
 })
 
-test('modified asset and CRLF starter are distinguished by content, not names', () => {
-  const root = project({ version: 'v7.3.0' })
-  for (const [name, text] of Object.entries(fixture.releases['v7.3.0'].files)) write(root, name, text.replaceAll('\n', '\r\n'))
-  write(root, 'src/assets/react.svg', '<svg>our logo</svg>')
+test('repeat initialization never removes later application code, assets, README or custom HTML', () => {
+  const root = project({ version: 'fresh' })
   run(root, 'apply')
-  assert.equal(readFileSync(join(root, 'src/assets/react.svg'), 'utf8'), '<svg>our logo</svg>')
-  assert.equal(existsSync(join(root, 'src/App.css')), false)
-  assert.equal(readFileSync(join(root, 'src/App.tsx'), 'utf8').includes('return null'), true)
+  write(root, 'src/App.tsx', 'export default function App(){return <h1>Real application</h1>}')
+  write(root, 'src/features/cars/PreviewCars.tsx', 'export const Cars = () => null')
+  write(root, 'src/assets/new-logo.svg', '<svg>application logo</svg>')
+  write(root, 'public/favicon.svg', '<svg>application favicon</svg>')
+  write(root, 'index.html', '<html><title>Application</title></html>')
+  write(root, 'README.md', '# Application documentation')
+  const before = snapshot(root)
+  assert.equal(run(root, 'apply').changed, 0)
+  assert.match(run(root, 'verify').status, /^FOUNDATION_CONTRACT_OK/)
+  assert.deepEqual(snapshot(root), before)
 })
 
-test('references in nonstandard extensions and oversized unscanned files keep demo assets', () => {
-  const root = project({ version: 'v8.0.0' })
-  write(root, 'src/theme.scss', 'background-image: url("./assets/react.svg");\n')
-  run(root, 'apply')
-  assert.ok(existsSync(join(root, 'src/assets/react.svg')))
-  const oversized = project({ version: 'v7.3.0' })
-  write(oversized, 'public/large.txt', Buffer.alloc(2 * 1024 * 1024 + 1, 'x'))
-  const result = run(oversized, 'apply')
-  assert.ok(existsSync(join(oversized, 'src/assets/react.svg')))
-  assert.ok(result.files.some((file) => file.status === 'preserve' && file.reason.includes('2 MiB')))
+test('protected content inside the reset scope blocks before writes', () => {
+  const root = project({ version: 'fresh' })
+  write(root, 'src/.env.local', 'PROTECTED_SENTINEL=1')
+  const before = snapshot(root)
+  assert.throws(() => run(root, 'apply'), /PROTECTED_FILE_IN_STARTER_SCOPE/)
+  assert.deepEqual(snapshot(root), before)
 })
 
 test('existing instructions, design exceptions and decisions are preserved and numbered correctly', () => {
