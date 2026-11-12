@@ -6,9 +6,7 @@ import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFile
 import { runFoundation } from './project-foundation.mjs'
 
 const skillRoot = realpathSync(fileURLToPath(new URL('../', import.meta.url)))
-const bundledCatalog = join(skillRoot, 'assets/catalog')
-const bundled = existsSync(bundledCatalog)
-export const catalogRoot = realpathSync(bundled ? bundledCatalog : fileURLToPath(new URL('../../../../', import.meta.url)))
+export const catalogRoot = realpathSync(fileURLToPath(new URL('../../../../', import.meta.url)))
 const digest = (data) => createHash('sha256').update(data).digest('hex')
 const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'))
 function fail(message) { throw new Error(message) }
@@ -83,7 +81,7 @@ function targetPayload(manifest, item) {
 function targetRoot(path) {
   if (!path || !existsSync(path)) fail('Target directory must already exist.')
   const target = realpathSync(resolve(path))
-  const installedInTarget = bundled && skillRoot === join(target, '.agents/skills/marko-knowledge-agent')
+  const installedInTarget = inside(safePath(target, 'apm_modules'), catalogRoot)
   if (dirname(target) === target || inside(catalogRoot, target) || (inside(target, catalogRoot) && !installedInTarget)) fail('Target must be a separate project, not the catalog, its descendant or ancestor.')
   if (!existsSync(join(target, 'package.json'))) fail('Target package.json missing; prepare a project first.')
   return target
@@ -202,7 +200,10 @@ export function runTransfer({ mode, source, target: targetPath, replaceFiles = [
   const manifest = loadSource(source)
   if (mode === 'check-source') return { mode, source, revision: manifest.revision, files: manifest.files.length, status: 'SOURCE_INTEGRITY_OK' }
   const target = targetRoot(targetPath)
-  for (const item of manifest.files) if (inside(skillRoot, safePath(target, item.to))) fail('Target payload must preserve the installed skill.')
+  for (const item of manifest.files) {
+    const destination = safePath(target, item.to)
+    if ([catalogRoot, skillRoot, safePath(target, 'apm_modules'), safePath(target, '.agents/skills/marko-knowledge-agent')].some((root) => inside(root, destination))) fail('Target payload must preserve the installed package and skill.')
+  }
   const dependencies = checkDependencies(manifest, target)
   if (manifest.kind === 'foundation') return runFoundation({ mode, target, manifest, dependencies, config, replaceFiles }, { safePath, digest, targetPayload, catalogRoot })
   if (config) fail('--config is only supported by the Foundation JSON contract; use the named config boundary for this Source.')

@@ -30,24 +30,31 @@ function filesIn(root, prefix = '') {
 }
 
 export function packageApm({ check = false } = {}) {
-  const files = new Map()
-  files.set('SKILL.md', readFileSync(join(authorSkill, 'SKILL.md')))
-  for (const name of ['source-transfer.mjs', 'project-foundation.mjs']) {
-    files.set('scripts/' + name, readFileSync(join(authorSkill, 'scripts', name)))
-  }
-  // Validate all sources and collect the exact manifest payload before writing.
-  for (const name of sources) {
-    const manifest = loadSource(name)
-    const folder = 'src/patterns/' + name + '/'
-    const inputs = new Set([
-      folder + 'source.manifest.json',
-      folder + manifest.pattern,
-      ...manifest.files.map(file => file.from),
-      ...(manifest.resources ?? []).map(file => file.path),
-      ...(manifest.screenshots ?? []).map(file => folder + file),
-    ])
-    for (const path of inputs) files.set('assets/catalog/' + path, readFileSync(safeFile(catalogRoot, path)))
-  }
+  for (const name of sources) loadSource(name)
+  const header = readFileSync(join(authorSkill, 'SKILL.md'), 'utf8').match(/^---\r?\n[\s\S]*?\r?\n---/)
+  if (!header) throw new Error('Skill frontmatter missing.')
+  const entry = header[0].replaceAll('\r\n', '\n') + `
+
+# Marko KnowledgeSource — APM ulaz
+
+Ovaj fajl samo pronalazi instalirani paket; ne sadrži kopiju kataloga.
+
+1. U ciljnom projektu pronađi MarkoAgentKnowledgeSource unutar apm_modules.
+   Uobičajena putanja je apm_modules/MarkoDK/MarkoAgentKnowledgeSource.
+   Ako se razlikuje, proveri apm.lock.yaml i pronađi paket čiji apm.yml ima
+   name: marko-agent-knowledge-source. Ne koristi autorov lokalni checkout.
+   Ako paket nedostaje ili je izbor dvosmislen, prijavi problem instalacije.
+2. Iz tog paketa pročitaj .agents/skills/marko-knowledge-agent/SKILL.md.
+   To je jedini globalni ugovor. Ne čitaj razvojni AGENTS.md paketa.
+3. Katalog i izvršne skripte ostaju u tom paketu, read-only. U komandama
+   <catalog> znači root pronađenog paketa; <target> je root React projekta.
+   Ne kopiraj katalog, skripte ili druge skillove u aplikaciju.
+
+Ova APM verzija podržava ${sources.join(' i ')}.
+Instalacija sama ne primenjuje nijedan pattern. Posle pronalaska ugovora
+izvrši korisnikov poziv kroz njegov postojeći plan/apply/verify workflow.
+`
+  const files = new Map([['SKILL.md', Buffer.from(entry)]])
   // This exact generated directory is versioned so a Git install needs no build.
   safeFile(catalogRoot, '.apm/skills/marko-knowledge-agent')
   const existing = filesIn(packageSkill)

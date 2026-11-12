@@ -1,28 +1,47 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { cpSync, existsSync, lstatSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
-import { catalogRoot } from './source-transfer.mjs'
+import { catalogRoot, loadSource } from './source-transfer.mjs'
 import { packageApm, packageSkill } from './package-apm.mjs'
 
-test('APM package is current and contains only the two ready Source contracts', () => {
+test('APM deploys exactly one Markdown entry point and keeps the catalog in apm_modules', () => {
   assert.deepEqual(packageApm({ check: true }).sources, ['ProjectFoundationSource', 'AppShellSource'])
+  assert.equal(packageApm({ check: true }).files, 1)
+  assert.deepEqual(readdirSync(packageSkill), ['SKILL.md'])
+  assert.ok(readFileSync(join(packageSkill, 'SKILL.md'), 'utf8').includes('apm_modules/MarkoDK/MarkoAgentKnowledgeSource'))
+  assert.equal(existsSync(join(packageSkill, 'assets')), false)
   assert.equal(existsSync(join(packageSkill, 'assets/catalog/AGENTS.md')), false)
   assert.equal(existsSync(join(packageSkill, 'assets/catalog/node_modules')), false)
   assert.equal(existsSync(join(packageSkill, 'scripts/package-apm.mjs')), false)
 })
 
-test('installed skill applies Foundation and AppShell in its own host, builds, and protects its sources', async () => {
+test('entry point resolves an installed package; transfer builds Foundation and AppShell without deployed TSX or source writes', async () => {
   const temporary = realpathSync(mkdtempSync(join(tmpdir(), 'coming-apm-contract-')))
   const installedSkill = join(temporary, '.agents/skills/marko-knowledge-agent')
   const modules = join(temporary, 'node_modules')
   try {
     cpSync(packageSkill, installedSkill, { recursive: true })
-    const transfer = await import(pathToFileURL(join(installedSkill, 'scripts/source-transfer.mjs')).href)
-    assert.equal(transfer.catalogRoot, realpathSync(join(installedSkill, 'assets/catalog')))
+    assert.deepEqual(readdirSync(installedSkill), ['SKILL.md'])
+    const installedPackage = join(temporary, 'apm_modules/MarkoDK/MarkoAgentKnowledgeSource')
+    mkdirSync(installedPackage, { recursive: true })
+    cpSync(join(catalogRoot, 'apm.yml'), join(installedPackage, 'apm.yml'))
+    const packageScripts = join(installedPackage, '.agents/skills/marko-knowledge-agent')
+    mkdirSync(join(packageScripts, 'scripts'), { recursive: true })
+    for (const file of ['SKILL.md', 'scripts/source-transfer.mjs', 'scripts/project-foundation.mjs']) cpSync(join(catalogRoot, '.agents/skills/marko-knowledge-agent', file), join(packageScripts, file))
+    for (const source of packageApm({ check: true }).sources) {
+      const manifest = loadSource(source)
+      const paths = new Set(['src/patterns/' + source + '/source.manifest.json', 'src/patterns/' + source + '/' + manifest.pattern, ...manifest.files.map(f => f.from), ...(manifest.resources ?? []).map(f => f.path), ...(manifest.screenshots ?? []).map(f => 'src/patterns/' + source + '/' + f)])
+      for (const file of paths) {
+        mkdirSync(dirname(join(installedPackage, file)), { recursive: true })
+        cpSync(join(catalogRoot, file), join(installedPackage, file))
+      }
+    }
+    const transfer = await import(pathToFileURL(join(packageScripts, 'scripts/source-transfer.mjs')).href)
+    assert.equal(transfer.catalogRoot, realpathSync(installedPackage))
     const source = join(transfer.catalogRoot, 'src/patterns/AppShellSource/app/layout/AppShell.tsx')
     const original = readFileSync(source)
     const host = JSON.parse(readFileSync(join(catalogRoot, 'package.json'), 'utf8'))
@@ -47,6 +66,8 @@ test('installed skill applies Foundation and AppShell in its own host, builds, a
     assert.equal(existsSync(join(temporary, 'src/patterns')), false)
     assert.throws(() => transfer.runTransfer({ source: 'AppShellSource', target: transfer.catalogRoot, mode: 'plan' }), /Target must be/)
     assert.ok(readFileSync(source).equals(original))
+    assert.deepEqual(readdirSync(installedSkill), ['SKILL.md'])
+    assert.throws(() => transfer.runTransfer({ source: 'AppShellSource', target: join(temporary, 'apm_modules'), mode: 'plan' }), /Target must be/)
 
     writeFileSync(join(temporary, 'tsconfig.json'), JSON.stringify({
       compilerOptions: { target: 'ES2023', lib: ['ES2023', 'DOM'], module: 'ESNext', moduleResolution: 'bundler', jsx: 'react-jsx', allowImportingTsExtensions: true, noEmit: true, skipLibCheck: true, types: ['vite/client'] },

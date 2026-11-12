@@ -55,7 +55,8 @@ nedostaje, prijavi sve nedostajuće biblioteke i komande za instalaciju.
 Za Core podseti na lokalni .npmrc ili korisnički registry setup, bez čitanja
 tajni. Pakete ne instaliraj niti vraćaj na stariju verziju bez odobrenja.
 
-Agent sam izvršava, iz foldera instaliranog skilla:
+Agent sam izvršava, iz stvarnog .agents/skills/marko-knowledge-agent foldera
+u pronađenom apm_modules paketu (ne iz ulaznog skilla u ciljnom projektu):
 
 ~~~sh
 node scripts/source-transfer.mjs check-source --source ProjectFoundationSource

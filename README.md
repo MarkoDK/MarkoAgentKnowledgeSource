@@ -2,45 +2,47 @@
 
 ## APM instalacija
 
-Paket 0.2.0 isporučuje ProjectFoundationSource i AppShellSource.
-Pre prenosa prijavljuje sve nedostajuće biblioteke sa komandama za instalaciju.
-Za Coming Core podseća na privatni npm registry i lokalni .npmrc ili korisničku konfiguraciju.
-Za pripremu i proveru iz root-a ovog repozitorijuma:
+Paket 0.3.0 podržava ProjectFoundationSource i AppShellSource.
+APM u ciljni .agents/skills/marko-knowledge-agent postavlja samo SKILL.md.
+Izvorni kod, screenshotovi i skripte ostaju u ignorisanom apm_modules paketu;
+ne dupliraju se kao assets/catalog i ne ulaze unapred u aplikacioni src.
 
-~~~sh
-npm run apm:package
-npm run apm:check
-~~~
-
-Izvorni skill ostaje u .agents/skills/marko-knowledge-agent, patterni u src/patterns.
-.apm/skills/marko-knowledge-agent je generisani distribucioni paket i ide u Git
-zajedno sa apm.yml. Ažurira se isključivo komandom apm:package. Prenosi samo
-skill, dve izvršne skripte i fajlove potrebne manifestima, uključujući slike.
-Posle svake izmene isporučenih izvora ponovo pripremi paket i pokreni provere.
-.gitattributes čuva tačne bajtove payload-a i manifesta pri Git kloniranju.
-
-U terminalu ciljnog React/Vite projekta lokalna probna instalacija je:
+U terminalu fresh Vite React/TypeScript projekta:
 
 ~~~powershell
-apm install "PUTANJA_DO_KNOWLEDGESOURCE" --target codex
+apm install MarkoDK/MarkoAgentKnowledgeSource#main --target codex --refresh
 ~~~
 
-Za instalaciju sa Git-a isti argument postaje HTTPS URL našeg repozitorijuma,
-uz provereni tag/commit. URL i prijava se definišu kada repozitorijum postoji.
-Instalacija pravi lokalni skill i apm.lock.yaml; APM se prethodno instalira na računaru.
-Na Windows-u koristi kratku putanju projekta ako APM prijavi WinError 206.
+Vidljive nove datoteke su apm.yml, apm.lock.yaml i ulazni SKILL.md,
+uz izmenu postojećeg .gitignore. Vite fajlovi i kasniji transfer su odvojene
+izmene. apm_modules se ne commit-uje. APM se prethodno instalira na računaru.
 
-Zatim u Codex chatu ciljnog projekta:
+Zatim u Codex chatu istog projekta:
 
 ~~~text
 $marko-knowledge-agent Primeni ProjectFoundationSource.
 $marko-knowledge-agent Primeni AppShellSource koristeći njegov izvorni AppLayoutConfig.tsx, bez izmena.
 ~~~
 
-Agent čita katalog unutar instaliranog skilla i koristi njegov source-transfer.
-Core/React/Router/TypeScript moraju već biti instalirani u ciljnom projektu.
-APM instalira znanje i izvorne fajlove za prenos; UI se dodaje pozivom patterna.
-Cards, Dashboard, Role i Tabela ostaju u razvoju kataloga i nisu u ovoj APM verziji.
+Ulazni skill pronalazi instalirani paket, čita njegov jedini globalni ugovor
+i pokreće originalni transfer alat iz tog paketa. Ne koristi autorov lokalni
+checkout. Agent sam proverava integritet, pakete, kolizije i rezultat.
+Preflight prijavljuje nedostajuće biblioteke i Core registry setup; instalacija
+APM-a sama ne instalira npm zavisnosti i ne primenjuje nijedan pattern.
+Cards, Dashboard, Role i Tabela ostaju van ovog APM obima.
+
+Za autora, posle izmena ugovora ili isporučenih izvora:
+
+~~~sh
+npm run apm:package
+npm run apm:check
+~~~
+
+.apm/skills/marko-knowledge-agent/SKILL.md je generisani kratki ulaz, bez
+kopiranog kataloga i paralelnih pravila. Izvorni ugovor ostaje u .agents/skills,
+a patterni u src/patterns. Provera pakovanja proverava oba podržana manifesta.
+Git instalacija ne traži build paketa. Na Windows-u koristiti kratku putanju
+projekta ako APM prijavi ograničenje putanje pri Git kloniranju.
 
 ## Razvoj kataloga
 

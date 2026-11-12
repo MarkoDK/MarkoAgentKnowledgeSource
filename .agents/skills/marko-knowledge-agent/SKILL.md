@@ -47,11 +47,16 @@ merge/cleanup ugovor ispod, ne AppShell pravilo o fiksnom runtime bootstrap-u.
   planiraj prenos; za postojeći Source prvo proveri integritet i primeni samo
   izabrane konfiguracione vrednosti. Kolizija, nepotpun prenos ili nepodudarna
   revision nisu dozvola za reset; prijavi stanje i traži odobrenje za migraciju.
-- U APM instalaciji katalog je u assets/catalog/ unutar ovog skill foldera;
-  odatle čitaj src/patterns/<SourceName>/<PatternName>Pattern.md i njegove fajlove.
-  Skripta sama nalazi ovaj katalog, bez putanje ka autorovom računaru.
-  U razvojnom checkout-u koristi src/patterns/ u root-u KnowledgeSource-a.
-  Ako izabrani Source nije u instaliranom paketu, prijavi da nije isporučen.
+- Ovaj ugovor i alat se u APM instalaciji čitaju iz pronađenog KnowledgeSource
+  paketa u apm_modules, ne iz kopije u .agents/skills ciljnog projekta.
+  <catalog> je root tog paketa; <target> je root React/Vite projekta.
+  Čitaj <catalog>/src/patterns/<SourceName>/<PatternName>Pattern.md. Komande
+  pokreći sa apsolutnom putanjom do <catalog>/.agents/skills/marko-knowledge-agent/scripts/source-transfer.mjs
+  i eksplicitnim --target. Alat sam nalazi katalog prema svojoj lokaciji.
+  Relativni scripts link ispod odnosi se na ovaj stvarni skill folder u paketu.
+  Ne kopiraj izvorni katalog ili skripte u ciljni .agents ili src.
+  Dostupni APM izvori su samo oni koje navodi instalirani ulazni SKILL.md.
+  Nedostajući paket/payload prijavi; ne koristi lokalni autorov projekat.
 - Čitaj samo izabrani pattern, njegov manifest/kod/slike i alat ispod.
   Ne otvaraj originalne referentne aplikacije.
 - Source je dostupan samo sa stvarnim patternom, payloadom, manifestom i
